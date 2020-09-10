@@ -134,27 +134,26 @@ def function_azimuth_angle(declination_angle: float, latitude_angle: float, hour
 
 def ipLatlong():
     # obtain IP address, City, local_latitude, local_longitude of your computer
-    respond = requests.get('http://ip-api.com/json/')                   # 上网获得本机外网IP地址的信息
-    start = respond.content.find(b'\"query\":\"', 0) + 9                # 在content中查找IP地址开始位置
-    end = respond.content.find(b'\"', start)                            # 在content中查找IP地址结束位置
-    ip = respond.content[start:end]                                     # 取出IP地址，ip是bytes-link
-    start = respond.content.find(b'\"city\":\"', 0) + 8                 # 在content中查找City开始位置
-    end = respond.content.find(b'\"', start)                            # 在content中查找City结束位置
-    city = respond.content[start:end]                                   # 取出City，City是bytes-link
-    start = respond.content.find(b'\"lat\":', 0) + 6                    # 在content中查找lat开始位置
-    end = respond.content.find(b',', start)                             # 在content中查找lat结束位置
-    local_latitude = float(respond.content[start:end])                  # 取出lat，转换为float
-    start = respond.content.find(b'\"lon\":', 0) + 6                    # 在content中查找lon开始位置
-    end = respond.content.find(b',', start)                             # 在content中查找lon结束位置
-    local_longitude = float(respond.content[start:end])                 # 取出lon，转换为float
-    return(ip,city,local_latitude,local_longitude)  
-
+    try:   
+        respond = requests.get('http://ip-api.com/json/')                   # 上网获得本机外网IP地址的信息
+        start = respond.content.find(b'\"query\":\"', 0) + 9                # 在content中查找IP地址开始位置
+        end = respond.content.find(b'\"', start)                            # 在content中查找IP地址结束位置
+        ip = respond.content[start:end]                                     # 取出IP地址，ip是bytes-link
+        start = respond.content.find(b'\"city\":\"', 0) + 8                 # 在content中查找City开始位置
+        end = respond.content.find(b'\"', start)                            # 在content中查找City结束位置
+        city = respond.content[start:end]                                   # 取出City，City是bytes-link
+        start = respond.content.find(b'\"lat\":', 0) + 6                    # 在content中查找lat开始位置
+        end = respond.content.find(b',', start)                             # 在content中查找lat结束位置
+        local_latitude = float(respond.content[start:end])                  # 取出lat，转换为float
+        start = respond.content.find(b'\"lon\":', 0) + 6                    # 在content中查找lon开始位置
+        end = respond.content.find(b',', start)                             # 在content中查找lon结束位置
+        local_longitude = float(respond.content[start:end])                 # 取出lon，转换为float
+        return(ip,city,local_latitude,local_longitude)  
+    except:
+        print("Error: No Connection")
+        return(0,0,0,0)
 
 def time():
-    # 1 second timer                         
-    utc_now = datetime.utcnow()                                
-                                         
-        
     utc_now = datetime.utcnow()
     year = utc_now.year
     month = utc_now.month

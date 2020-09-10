@@ -4,9 +4,7 @@ from sys import exit
 
 
 
-controlPins2 = [15,13,12,11] # HORIZONTAL (Azimuth)
 
-controlPins1 = [36,35,33,31] # VERTICAL (altitiude)
 
 halfstep_seq = [
   [1,0,0,0],
@@ -48,15 +46,15 @@ def move(degrees,rotation,device):
 
 #value of 1.38 for 1 degree movement
 # pins 19 21
-def initalise(): #initialise the stepper motors
+def initalise(horizontal, vertical): #initialise the stepper motors
   GPIO.setmode(GPIO.BOARD)
   GPIO.setup(19,GPIO.IN, pull_up_down=GPIO.PUD_DOWN) # Horizontal
   GPIO.setup(21,GPIO.IN, pull_up_down=GPIO.PUD_DOWN) # Vertical
   
-  for pin in controlPins1: # sets up the pins as inputs
+  for pin in horizontal: # sets up the pins as inputs
     GPIO.setup(pin, GPIO.OUT)
     GPIO.output(pin,0)
-  for pin in controlPins2:
+  for pin in vertical:
     GPIO.setup(pin, GPIO.OUT)
     GPIO.output(pin,0)
 
@@ -64,16 +62,16 @@ def initalise(): #initialise the stepper motors
   vert = 21
   #horizontal, anticlockwise
   GPIO.add_event_detect(19, GPIO.RISING)
-  triggerH = rotateHit(hor,controlPins2)
+  triggerH = rotateHit(hor,horizontal)
   
   if triggerH == 1:
     print("setting to 90")
-    rotateReset(hor,controlPins2)
+    rotateReset(hor,horizontal)
   #vertical
   GPIO.add_event_detect(21, GPIO.RISING)
-  triggerV = rotateHit(vert, controlPins1)
+  triggerV = rotateHit(vert, vertical)
   if triggerV == 1:
-    rotateReset(vert,controlPins1)
+    rotateReset(vert,vertical)
   print("done")
   return
 

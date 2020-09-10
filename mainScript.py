@@ -2,6 +2,10 @@ import stepperScript as step
 import Sun_Angles as sun
 import RPi.GPIO as GPIO
 from datetime import datetime
+
+#Global Variables
+controlPins2 = [15,13,12,11] # HORIZONTAL (Azimuth)
+controlPins1 = [36,35,33,31] # VERTICAL (altitiude)
 #Starting sequence
 #1. initalise motors to ensure that they are in the right position
 #2. connect to the internet/ping the internet to make sure to get address
@@ -9,38 +13,62 @@ from datetime import datetime
 
 #Calculations
 #request ip, location, latitude, longitude
-ip,city,localLatitude,localLongitude = sun.ipLatlong()
 year, month, day, greenwich_mean_time = sun.time()
-
-input("->")
-
+ip,city,localLatitude,localLongitude = sun.ipLatlong()
+if (ip,city, localLatitude,localLongitude == 0):
+    check = 0
+    while check is not 2:
+        localLatitude = input("## No Connection. Please enter local Latitude of Device --> ")
+        localLongitude = input("## No Connection. Please enter local Latitude of Device --> ")
+        #latitude (-90 to 90)
+        if localLatitude > -90 and localLatitude < 90:
+            ++check
+        else:
+            print("Latitude is invalid, please try again")
+        if localLongitude > -180 and localLongitude < 180:
+            ++check
+        else:
+            print("Longitude is invalid, please try again")
+        #Longitude ( -180 to 180)
 # First request for hour angle, and azimuth_angle 
-
+#both vertical and horizontal only need 90 degrees of movement
 hourAngle = sun.function_hour_angle(year, month, day, greenwich_mean_time, localLongitude)
 declinationAngle = sun.function_declination_angle(year, month, day)
-altitudeAngle = sun.function_altitude_angle(declinationAngle,localLatitude,hourAngle)
+altitudeAngle = 90 - sun.function_altitude_angle(declinationAngle,localLatitude,hourAngle)
 azimuthAngle = sun.function_azimuth_angle(declinationAngle, localLatitude, hourAngle, alititudeAngle)
+if azimuthAngle
+
+
+
+previousAltAngle = altitudeAngle
+previousAziAngle = azimuthAngle
+
+
+
+
 
 #intial startup ALTITUDE
 intial = 0
 if initial == 0:
     angleSet = 90 - altitudeAngle
-    step.move(angleSet, 0 , controlPins1) #control pins here probably wont work
+    step.move(angleSet, 0 , controlPins1) 
     if azimuthAngle > 0:
         step.move(azimuthAngle, 1, controlPins2)
-    else if azimuthAngle < 0:
+    elif azimuthAngle < 0:
         step.move(abs(azimuthAngle), 1, controlPins2)
+    else:
+        continue
+
 #assume the device is placed North
 #altitude
-previousAngle
 #NightTime
 if altitudeAngle == 90 and azimuthAngle == 0:
-    reset = 90 - previousAngle
+    resetAlt = 90 - previousAltAngle
+    resetAzi =  
     if reset == 0:
         break
     step.move(reset,0, controlPins1)
-
-
+    
 
 #Daytime
 
