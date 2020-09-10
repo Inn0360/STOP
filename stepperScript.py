@@ -4,10 +4,9 @@ from sys import exit
 
 
 
-controlPins2 = [15,13,12,11] # HORIZONTAL
+controlPins2 = [15,13,12,11] # HORIZONTAL (Azimuth)
 
-controlPins1 = [36,35,33,31]
-
+controlPins1 = [36,35,33,31] # VERTICAL (altitiude)
 
 halfstep_seq = [
   [1,0,0,0],
@@ -24,9 +23,9 @@ def move(degrees,rotation,device):
 
   GPIO.setup(GPIO.BOARD)
 
-  GPIO.setwarnings(False)
+  GPIO.setwarnings(False) # remove this later lol
   control_pins = device
-  amount = round(degrees * 1.35)
+  amount = round(degrees * 1.38)
   print(amount)
   # rotation == 0 means anticlockwise
   # rotation == 1 means clockwise
@@ -47,16 +46,14 @@ def move(degrees,rotation,device):
             GPIO.output(control_pins[pin], halfstep_seq[halfstep][pin])
           time.sleep(0.001)
 
-
 #value of 1.38 for 1 degree movement
 # pins 19 21
-
-def initalise():
+def initalise(): #initialise the stepper motors
   GPIO.setmode(GPIO.BOARD)
   GPIO.setup(19,GPIO.IN, pull_up_down=GPIO.PUD_DOWN) # Horizontal
   GPIO.setup(21,GPIO.IN, pull_up_down=GPIO.PUD_DOWN) # Vertical
   
-  for pin in controlPins1:
+  for pin in controlPins1: # sets up the pins as inputs
     GPIO.setup(pin, GPIO.OUT)
     GPIO.output(pin,0)
   for pin in controlPins2:
@@ -77,11 +74,8 @@ def initalise():
   triggerV = rotateHit(vert, controlPins1)
   if triggerV == 1:
     rotateReset(vert,controlPins1)
-
   print("done")
   return
-
-
 
 def rotateHit(pins,motor):
   

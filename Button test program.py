@@ -1,15 +1,7 @@
-#Button test program
+import Sun_Angles as angles
+from math import asin, sin, pi, cos, acos
+from typing import List
+from datetime import datetime
+import requests
 
-import RPi.GPIO as GPIO
-
-GPIO.setmode(GPIO.BOARD)
-GPIO.setup(19,GPIO.IN)
-GPIO.setwarnings(False)
-number = 0
-GPIO.add_event_detect(19, GPIO.RISING)
-while True:
-
-    if(GPIO.event_detected(19)):
-       print("press")
-
-
+print(angles.ipLatlong())

@@ -132,8 +132,7 @@ def function_azimuth_angle(declination_angle: float, latitude_angle: float, hour
 
     return azimuth_angle
 
-
-if __name__ == '__main__':
+def ipLatlong():
     # obtain IP address, City, local_latitude, local_longitude of your computer
     respond = requests.get('http://ip-api.com/json/')                   # 上网获得本机外网IP地址的信息
     start = respond.content.find(b'\"query\":\"', 0) + 9                # 在content中查找IP地址开始位置
@@ -148,40 +147,22 @@ if __name__ == '__main__':
     start = respond.content.find(b'\"lon\":', 0) + 6                    # 在content中查找lon开始位置
     end = respond.content.find(b',', start)                             # 在content中查找lon结束位置
     local_longitude = float(respond.content[start:end])                 # 取出lon，转换为float
+    return(ip,city,local_latitude,local_longitude)  
 
-    # 1 second timer
-    last_second = 0                                                     # 开始设置last_second = 0
-    while True:                                                         # 主循环，由1秒定时控制，计算高度角和方位角
-        while True:                                                     # 1秒定时器循环
-            utc_now = datetime.utcnow()                                 # 获得格林威治时间
-            if last_second != utc_now.second:                           # 如果过了1秒，退出循环
-                break
-        last_second = utc_now.second                                    # 将last_second设为新时间
 
-        # obtain date and greenwich_mean_time                           # 获得日期和格林威治时间(小时为单位)，并打印所有参数
-        year = utc_now.year
-        month = utc_now.month
-        day = utc_now.day
-        greenwich_mean_time = utc_now.hour + utc_now.minute / 60 + utc_now.second / 3600
-        print(f'\nip = {ip.decode()}, City = {city.decode()},'
-              f' Local_Latitude = {local_latitude}, Local_Longitude = {local_longitude}')
-        print(f'Year = {year}, Month = {month}, Day = {day}, greenwich_mean_time = {greenwich_mean_time}')
+def time():
+    # 1 second timer                         
+    utc_now = datetime.utcnow()                                
+                                         
+        
+    utc_now = datetime.utcnow()
+    year = utc_now.year
+    month = utc_now.month
+    day = utc_now.day
+    greenwich_mean_time = utc_now.hour + utc_now.minute / 60 + utc_now.second / 3600
+    return(year, month, day, greenwich_mean_time)
 
-        # Calculate Hour Angle                                          # 计算Hour Angle，并打印
-        hour_angle = function_hour_angle(year, month, day, greenwich_mean_time, local_longitude)
-        print(f'Hour Angle = {hour_angle}')
-
-        # Calculate Declination Angle of SUN                            # 计算太阳的赤纬角，并打印
-        declination_angle = function_declination_angle(year, month, day)
-        print(f'Declination Angle of SUN = {declination_angle}')
-
-        # Calculate Altitude Angle of Solar Batty Panel                 # 计算高度角，并打印
-        altitude_angle = function_altitude_angle(declination_angle, local_latitude, hour_angle)
-        print(f'Latitude Angle = {altitude_angle}')
-
-        # Calculate Azimuth Angle of Solar Batty Panel                  # 计算方位角，并打印
-        azimuth_angle = function_azimuth_angle(declination_angle, local_latitude, hour_angle, altitude_angle)
-        print(f'Azimuth Angle = {azimuth_angle}')
+    
 
 """
     year = 2020
