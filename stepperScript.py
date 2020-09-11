@@ -3,9 +3,6 @@ import time
 from sys import exit
 
 
-
-
-
 halfstep_seq = [
   [1,0,0,0],
   [1,1,0,0],
@@ -86,7 +83,7 @@ def rotateHit(pins,motor):
             return(1)
           time.sleep(0.001)
 
-def rotateReset(pins,motor):
+def rotateReset(pins,motor):   #Azimuth
   print("rotating")
   for i in range(90):
     print("rotate running")
