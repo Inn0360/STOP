@@ -57,25 +57,46 @@ return previousAltAngle, previousAziAngle
 #assume the device is placed North
 #altitude
 #NightTime/Reset
-def angleReset(altitudeAngle, azimuthAngle):
-    if altitudeAngle == 90 and azimuthAngle == 0:    
-        if 
-        resetAlt = 90 - previousAltAngle
-        resetAzi =  
-        if reset == 0:
-            break
-        step.move(reset,0, controlPins1)
-        
+def angleReset(previousAziAngle, previousAltAngle):
+    # if altitudeAngle == 404 and azimuthAngle == 404: (needs to be placed in main loop as a condition)    
+    ok = 0
+    if (previousAziAngle > 0):
+        resetAzi = previousAziAngle
+        print("moving, azimuth, clockwise")
+        step.move(resetAzi, 1, controlPins1)
+        ok++ 
+    elif (previousAziAngle < 0):
+        resetAzi = abs(previousAziAngle)
+        print("moving, azimuth, anticlockwise")
+        step.move(resetAzi, 0, controlPins1)
+        ok++
+    
+    if (previousAltAngle > 0):
+        resetAlt = previousAltAngle
+        print("moving, altitude, clockwise")
+        step.move(resetAlt, 1, controlPins2)
+        ok++
+    elif (previousAltAngle < 0):
+        resetAlt = abs(previousAltAngle)
+        print("moving, altitude, anticlockwise")
+        step.move(resetAlt, 0, controlPins2)
+        ok++
+
+    if (ok == 2):
+        return 1
+    else:
+        return 0
+
 
 #Daytime
 def changeAngle(altitudeAngle, previousAltAngle, azimuthAngle, previousAziAngle):
     altitudeDifference =  previousAltAngle - alititudeAngle
     if (altitudeDifference) == 0:
         print("not moving, altitude")
-    else if altitudeDifference > 0:
+    elif altitudeDifference > 0:
         print("moving, altitude, clockwise")
         step.move(altitudeDifference, 1, controlPins1)
-    else if altitudeDifference < 0:
+    elif altitudeDifference < 0:
         print("moving, altitude, anticlockwise")
         step.move(abs(altitudeDifference), 0, controlPins1)
     previousAltAngle = altitudeAngle #after changes, then set angle as 'previous angle'.
@@ -83,11 +104,11 @@ def changeAngle(altitudeAngle, previousAltAngle, azimuthAngle, previousAziAngle)
     #Azimuth
     azimuthDifference = azimuthAngle - previousAziAngle
     if (azimuthDifference) == 0:
-        print("not moving, altitude")
-    else if azimuthDifference > 0:
+        print("not moving, azimuth")
+    elif azimuthDifference > 0:
         print("moving, azimuth, clockwise")
         step.move(azimuthDifference, 1, controlPins2)
-    else if azimuthDifference < 0:
+    elif azimuthDifference < 0:
         print("moving, azimuth, anticlockwise")
         step.move(abs(azimuthDifference), 0, controlPins2)
     previousAziAngle = azimuthAngle
@@ -112,4 +133,22 @@ angle * 1.38 for movement in degrees
 
 #- need to make sure that it doesnt track after 180 degrees ie under the ground
 if __name__ == '__main__':
+
+    init = 0 
+    while init = 0: 
+        if altitudeAngle == 404 and azimuthAngle == 404:
+            init = 0
+        else: 
+            initialise()
+            init = 1 
+
+    while init > 0
+        changeAngle(altitudeAngle, previousAltAngle, azimuthAngle, previousAziAngle)
+        if altitudeAngle == 404 and azimuthAngle == 404:
+            angleReset(previousAziAngle, previousAziAngle) 
+            init = 0
+
+
+ 
+
 

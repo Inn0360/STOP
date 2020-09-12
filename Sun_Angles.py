@@ -113,14 +113,14 @@ def function_altitude_angle(declination_angle: float, latitude_angle: float, hou
                           cos(pi * declination_angle / 180) * cos(pi * latitude_angle / 180) *
                           cos(pi * hour_angle / 180)) / pi * 180
     if altitude_angle < 0:
-        altitude_angle = 90  # 太阳到地球背面去了，让太阳能板正对天上。
+        altitude_angle = 404  # 太阳到地球背面去了，让太阳能板正对天上。
     return altitude_angle
 
 
 def function_azimuth_angle(declination_angle: float, latitude_angle: float, hour_angle: float, altitude_angle: float):
     # This function will calculate Azimuth Angle of Solar Battery Panel from Declination Angle of SUN,
     # Latitude Angle of Location, and Hour Angle. The input and output are degrees.
-    if altitude_angle == 90:
+    if altitude_angle == 404:
         azimuth_angle = -404  # 太阳到背面去了，让太阳能版正对着北。
     else:
         azimuth_angle = acos((sin(pi * declination_angle / 180) * cos(pi * latitude_angle / 180) -
