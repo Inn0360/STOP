@@ -1,13 +1,8 @@
-#Written by Alice Ngyuen and Howin Tam, Spring 2020 Applications Studio A
-#main script calculates the azimuth and altitude angle, and controls the direction and motion of stepper motors
-
-
 import stepperScript as step
-import Sun_Angles as sun
+import sunanglesedit_alice as sun
 import RPi.GPIO as GPIO
 from datetime import datetime
 import time
-from sys import exit
 
 #Global Variables
 controlPins2 = [15,13,12,11] # HORIZONTAL (Azimuth)
@@ -19,49 +14,46 @@ controlPins1 = [36,35,33,31] # VERTICAL (altitiude)
     #Calculations
 #request ip, location, latitude, longitude
 
-def getLocation():
-    
-    ip,city,localLatitude,localLongitude = sun.ipLatlong()
-    if ip == 0:
+def noInternet(): 
+    try:   
+        respond = requests.get('http://ip-api.com/json/')                   # 上网获得本机外网IP地址的信息
+        start = respond.content.find(b'\"query\":\"', 0) + 9                # 在content中查找IP地址开始位置
+        end = respond.content.find(b'\"', start)                            # 在content中查找IP地址结束位置
+        ip = respond.content[start:end]                                     # 取出IP地址，ip是bytes-link
+        start = respond.content.find(b'\"city\":\"', 0) + 8                 # 在content中查找City开始位置
+        end = respond.content.find(b'\"', start)                            # 在content中查找City结束位置
+        city = respond.content[start:end]                                   # 取出City，City是bytes-link
+        start = respond.content.find(b'\"lat\":', 0) + 6                    # 在content中查找lat开始位置
+        end = respond.content.find(b',', start)                             # 在content中查找lat结束位置
+        latitude_angle = float(respond.content[start:end])                  # 取出lat，转换为float
+        start = respond.content.find(b'\"lon\":', 0) + 6                    # 在content中查找lon开始位置
+        end = respond.content.find(b',', start)                             # 在content中查找lon结束位置
+        local_longitude = float(respond.content[start:end])                 # 取出lon，转换为float
+    except:
+        print("Error: No Connection")
+
+    if (ip,city, latitude_angle,local_longitude  == 0):
         check = 0
         while check is not 2:
-            localLatitude = input("## No Connection. Please enter local Latitude of Device --> ")
-            localLongitude = input("## No Connection. Please enter local Longitude of Device --> ")
-            localLatitude = float(localLatitude)
-            localLongitude = float(localLongitude)
-            print("localLat = {0}".format(localLatitude))
-            print("localLong = {0}".format(localLongitude))
-
+            latitude_angle = input("## No Connection. Please enter local Latitude of Device --> ")
+            local_longitude = input("## No Connection. Please enter local Latitude of Device --> ")
             #latitude (-90 to 90)
-            if localLatitude > -90 and localLatitude < 90:
+            if latitude_angle > -90 and latitude_angle < 90:
                 check += 1
             else:
                 print("Latitude is invalid, please try again")
-                check = 0
-            if localLongitude > -180 and localLongitude < 180:
+            if local_longitude > -180 and local_longitude < 180:
                 check += 1
             else:
                 print("Longitude is invalid, please try again")
-                check = 0 
-    return localLatitude, localLongitude
             #Longitude ( -180 to 180)
     # First request for hour angle, and azimuth_angle 
     #both vertical only need 90 degrees of movement
-    
-def getAngles(localLatitude, localLongitude):
-    year, month, day, greenwich_mean_time = sun.time()
-    hourAngle = sun.function_hour_angle(year, month, day, greenwich_mean_time, localLongitude)
-    declinationAngle = sun.function_declination_angle(year, month, day)
 
-    altitudeAngle = sun.function_altitude_angle(declinationAngle,localLatitude,hourAngle)
-    azimuthAngle = sun.function_azimuth_angle(declinationAngle, localLatitude, hourAngle, altitudeAngle)
-    altitudeAngle = 90 - altitudeAngle
-    print("altitudeAngle = {0}".format(altitudeAngle))
-    print("azimuthAngle = {0}".format(azimuthAngle))
-    return altitudeAngle, azimuthAngle
 
 #intial startup ALTITUDE
 def initialise(altitudeAngle, azimuthAngle):
+    azimuthAngle, altitudeAngle  = sun.sunAngles()
     initial = 0
     if initial == 0:
         step.move(altitudeAngle, 0 , controlPins1) 
@@ -72,7 +64,6 @@ def initialise(altitudeAngle, azimuthAngle):
 
     previousAltAngle = altitudeAngle
     previousAziAngle = azimuthAngle
-
     return previousAltAngle, previousAziAngle
 
 
@@ -112,8 +103,7 @@ def angleReset(previousAziAngle, previousAltAngle):
 
 #Daytime
 def changeAngle(altitudeAngle, previousAltAngle, azimuthAngle, previousAziAngle):
-    altitudeDifference =  previousAltAngle - altitudeAngle
-    print('altitudeDifference = {0}'.format(altitudeDifference))
+    altitudeDifference =  previousAltAngle - alititudeAngle
     if (altitudeDifference) == 0:
         print("not moving, altitude")
     elif altitudeDifference > 0:
@@ -126,7 +116,6 @@ def changeAngle(altitudeAngle, previousAltAngle, azimuthAngle, previousAziAngle)
 
     #Azimuth
     azimuthDifference = azimuthAngle - previousAziAngle
-    print('azimuthDifference = {0}'.format(azimuthDifference))
     if (azimuthDifference) == 0:
         print("not moving, azimuth")
     elif azimuthDifference > 0:
@@ -157,32 +146,25 @@ def changeAngle(altitudeAngle, previousAltAngle, azimuthAngle, previousAziAngle)
 
 #- need to make sure that it doesnt track after 180 degrees ie under the ground
 if __name__ == '__main__':
+    
+    
 
-    init = 0
-    step.initalise(controlPins2,controlPins1)
-    localLatitude, localLongitude = getLocation() 
-    while True: 
-        while (init == 0): 
-            altitudeAngle, azimuthAngle = getAngles(localLatitude,localLongitude)
-            if altitudeAngle == 404 and azimuthAngle == 404:
-                init = 0
-                print("Night Time")
-            else: 
-                previousAltAngle, previousAziAngle = initialise(altitudeAngle, azimuthAngle)
-                init = 1 
-                print("Initialised")
-            time.sleep(10) #program sleeps for 10 seconds before executing more 
+    init = 0 
+    while (init == 0): 
+        if altitudeAngle == 404 and azimuthAngle == 404:
+            init = 0
+        else: 
+            initialise(altitudeAngle, azimuthAngle)
+            init = 1 
+        time.sleep(10) #program sleeps for 10 seconds before executing more 
 
-        while (init > 0):
-            altitudeAngle, azimuthAngle = getAngles(localLatitude,localLongitude)
-            print("Change Angle")
-            if altitudeAngle == 404 and azimuthAngle == 404:
-                angleReset(previousAziAngle, previousAziAngle) 
-                print("NightTIme In Change Angle")
-                init = 0
-            else:
-                 changeAngle(altitudeAngle, previousAltAngle, azimuthAngle, previousAziAngle)
-            time.sleep(10)
+    while (init > 0):
+        changeAngle(altitudeAngle, previousAltAngle, azimuthAngle, previousAziAngle)
+        if altitudeAngle == 404 and azimuthAngle == 404:
+            angleReset(previousAziAngle, previousAziAngle) 
+            init = 0
+        time.sleep(10)
+
 
  
 
