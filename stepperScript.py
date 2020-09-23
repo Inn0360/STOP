@@ -19,7 +19,7 @@ halfstep_seq = [
 
 def move(degrees,rotation,device):
   GPIO.setmode(GPIO.BOARD)
-  GPIO.setwarnings(False) # remove this later lol
+  
   print("Rotate Direction = {0}".format(rotation))
   amount = round(degrees * 1.38)
   # rotation == 0 means anticlockwise
