@@ -177,28 +177,28 @@ if __name__ == '__main__':
                     GPIO.output(pin,0)
                 for pin in controlPins2:
                     GPIO.output(pin,0)
-                print("Night Time\n\n")
-                print("-------------------------------------------------------------------------------------------")
+                print("Night Time")
+                 print("-------------------------------------------------------------------------------------------")
             else: 
                 previousAltAngle, previousAziAngle = initialise(altitudeAngle, azimuthAngle)
                 init = 1 
-                print("Initialised\n\n")
-                print("-------------------------------------------------------------------------------------------")
-            time.sleep(10) #program sleeps for 30 mins before executing more 
+                print("Initialised")
+                 print("-------------------------------------------------------------------------------------------")
+            time.sleep(1800) #program sleeps for 30 mins before executing more 
 
         while (init > 0):
             altitudeAngle, azimuthAngle = getAngles(localLatitude,localLongitude)
-            print("Change Angle\n\n")
+            print("Change Angle")
             if altitudeAngle == 404 and azimuthAngle == 404:
                 angleReset(previousAziAngle, previousAltAngle) 
-                print("NightTime In Change Angle\n\n")
+                print("NightTime In Change Angle")
                 init = 0
-                print("-------------------------------------------------------------------------------------------")
+                 print("-------------------------------------------------------------------------------------------")
             else:
                 previousAziAngle, previousAltAngle = changeAngle(altitudeAngle, previousAltAngle, azimuthAngle, previousAziAngle)
-                print("-------------------------------------------------------------------------------------------")
-            time.sleep(10)
-       
+            time.sleep(1800)
+        print("-------------------------------------------------------------------------------------------")
+
 
  
 

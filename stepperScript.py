@@ -1,7 +1,7 @@
 #Writen by Howin Tam, Spring 2020 Applications Studio A
 #Stepper Motor Script controls two motors connected to a custom PCB
 
-mport RPi.GPIO as GPIO
+import RPi.GPIO as GPIO
 import time
 from sys import exit
 
@@ -20,7 +20,7 @@ halfstep_seq = [
 def move(degrees,rotation,device):
   GPIO.setmode(GPIO.BOARD)
   GPIO.setwarnings(False) # remove this later lol
-  print("rotation = {0}".format(rotation))
+  print("Rotate Direction = {0}".format(rotation))
   amount = round(degrees * 1.38)
   # rotation == 0 means anticlockwise
   # rotation == 1 means clockwise
@@ -84,14 +84,11 @@ def rotateHit(pins,motor):
         for pin in range(4):
           GPIO.output(motor[pin], halfstep_seq[halfstep][pin])
           if GPIO.event_detected(pins):
-            print("Button Hit")
             return(1)
           time.sleep(0.001)
 
 def rotateReset(pins,motor):   #Azimuth
-  print("rotating")
   for i in range(90):
-    print("rotate running")
     for halfstep in range(7,0,-1):
       for pin in range(4):
         GPIO.output(motor[pin], halfstep_seq[halfstep][pin])
