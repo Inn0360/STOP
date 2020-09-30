@@ -84,26 +84,26 @@ def angleReset(previousAziAngle, previousAltAngle):
     if (previousAziAngle > 0):
         resetAzi = previousAziAngle
         print("moving, azimuth, clockwise")
-        print("resetting clockwise by " + resetAzi)
+        print("resetting clockwise by {0}".format(resetAzi))
         step.move(resetAzi, 1, controlPins1)
         ok+= 1
     elif (previousAziAngle < 0):
         resetAzi = abs(previousAziAngle)
         print("moving, azimuth, anticlockwise")
-        print("resetting anticlockwise by " + resetAzi)
+        print("resetting anticlockwise by {0}".format(resetAzi))
         step.move(resetAzi, 0, controlPins1)
         ok+= 1
     
     if (previousAltAngle > 0):
         resetAlt = previousAltAngle
         print("moving, altitude, clockwise")
-        print("resetting clockwise by " + resetAlt)
+        print("resetting clockwise by {0}".format(resetAlt))
         step.move(resetAlt, 1, controlPins2)
         ok+= 1
     elif (previousAltAngle < 0):
         resetAlt = abs(previousAltAngle)
         print("moving, altitude, anticlockwise")
-        print("resetting anticlockwise by " + resetAlt)
+        print("resetting anticlockwise by {0}".format(resetAlt))
         step.move(resetAlt, 0, controlPins2)
         ok+= 1
 
