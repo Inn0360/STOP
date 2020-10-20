@@ -4,7 +4,7 @@ from sys import exit
 
 GPIO.setmode(GPIO.BOARD)
 GPIO.setwarnings(False)
-control_pins = [15, 13, 12, 11]
+control_pins = [36, 35, 33, 31]
 direction = 0
 for pin in control_pins:
     GPIO.setup(pin, GPIO.OUT)

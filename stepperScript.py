@@ -78,17 +78,25 @@ def initalise(horizontal, vertical): #initialise the stepper motors
   return
 
 def rotateHit(pins,motor):
-  
-  for i in range(180):
+  if(pins == 19):
+    num = 180
+  elif(pins == 21):
+    num = 90
+  for i in range(num):
       for halfstep in range(8):
         for pin in range(4):
           GPIO.output(motor[pin], halfstep_seq[halfstep][pin])
           if GPIO.event_detected(pins):
             return(1)
           time.sleep(0.001)
+  return(1)
 
 def rotateReset(pins,motor):   #Azimuth
-  for i in range(90):
+  if(pins == 19):
+    num = 180
+  elif(pins == 21):
+    num = 90
+  for i in range(num):
     for halfstep in range(7,0,-1):
       for pin in range(4):
         GPIO.output(motor[pin], halfstep_seq[halfstep][pin])
