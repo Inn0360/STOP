@@ -81,31 +81,31 @@ def initialise(altitudeAngle, azimuthAngle):
 def angleReset(previousAziAngle, previousAltAngle):
     # if altitudeAngle == 404 and azimuthAngle == 404: (needs to be placed in main loop as a condition)    
     ok = 0
-    if (previousAziAngle > 0):
+    if (previousAziAngle < 0):
         resetAzi = previousAziAngle
         print("moving, azimuth, clockwise")
         print("resetting clockwise by {0}".format(resetAzi))
         step.move(resetAzi, 1, controlPins1)
         ok+= 1
-    elif (previousAziAngle < 0):
+    elif (previousAziAngle > 0):
         resetAzi = abs(previousAziAngle)
         print("moving, azimuth, anticlockwise")
         print("resetting anticlockwise by {0}".format(resetAzi))
         step.move(resetAzi, 0, controlPins1)
         ok+= 1
     
-    if (previousAltAngle < 0):
+    if (previousAltAngle > 0):
         resetAlt = previousAltAngle
         print("moving, altitude, clockwise")
         print("resetting clockwise by {0}".format(resetAlt))
-        step.move(resetAlt, 1, controlPins2)
-        ok+= 1
-    elif (previousAltAngle > 0):
-        resetAlt = abs(previousAltAngle)
-        print("moving, altitude, anticlockwise")
-        print("resetting anticlockwise by {0}".format(resetAlt))
         step.move(resetAlt, 0, controlPins2)
         ok+= 1
+   # elif (previousAltAngle < 0):
+   #     resetAlt = abs(previousAltAngle)
+    #    print("moving, altitude, anticlockwise")
+    #    print("resetting anticlockwise by {0}".format(resetAlt))
+    #    step.move(resetAlt, 0, controlPins2)
+     #   ok+= 1
 
     if (ok == 2):
         return 1
@@ -171,7 +171,7 @@ if __name__ == '__main__':
         # previousAltAngle, previousAziAngle = 0 
         while (init == 0): 
             altitudeAngle, azimuthAngle = getAngles(localLatitude,localLongitude)
-            if altitudeAngle == 404 and azimuthAngle == 404:
+            if abs(altitudeAngle) == 404 and abs(azimuthAngle) == 404:
                 init = 0
                 for pin in controlPins1:
                     GPIO.output(pin,0)
@@ -189,7 +189,7 @@ if __name__ == '__main__':
         while (init > 0):
             altitudeAngle, azimuthAngle = getAngles(localLatitude,localLongitude)
             print("\nChange Angle\n")
-            if altitudeAngle == 404 and azimuthAngle == 404:
+            if abs(altitudeAngle) == 404 and abs(azimuthAngle) == 404:
                 angleReset(previousAziAngle, previousAltAngle) 
                 print("\nNightTime In Change Angle\n")
                 init = 0
