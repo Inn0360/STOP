@@ -1,4 +1,4 @@
-#Automatic Solar Tracker - Based on Keplerian Theory
+#Automatic Solar Tracker - Based on Keplerian Theory#
 Authors: Alice, Howin, Yuhui, Tatiana
 
 
