@@ -98,7 +98,7 @@ def angleReset(previousAziAngle, previousAltAngle):
         resetAlt = previousAltAngle
         print("moving, altitude, clockwise")
         print("resetting clockwise by {0}".format(resetAlt))
-        step.move(resetAlt, 0, controlPins2)
+        step.move(resetAlt, 1, controlPins2)
         ok+= 1
    # elif (previousAltAngle < 0):
    #     resetAlt = abs(previousAltAngle)
