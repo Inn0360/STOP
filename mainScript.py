@@ -23,7 +23,7 @@ def getLocation():
     ip,city,localLatitude,localLongitude = sun.ipLatlong()
     if ip == 0:
         check = 0
-        while check is not 2:
+        while check != 3:
             localLatitude = input("## No Connection. Please enter local Latitude of Device --> ")
             localLongitude = input("## No Connection. Please enter local Longitude of Device --> ")
             localLatitude = float(localLatitude)
@@ -42,6 +42,12 @@ def getLocation():
             else:
                 print("Longitude is invalid, please try again")
                 check = 0 
+            while check == 2:
+                confirm = input("Please confirm. Latitude ={0}. Longitude ={1}.(Y/N)".format(localLatitude,localLongitude))
+                if confirm is 'Y' or 'y':
+                    check += 1
+                elif confirm is 'N' or 'n':
+                    check = 0
     return localLatitude, localLongitude
             #Longitude ( -180 to 180)
     # First request for hour angle, and azimuth_angle 
@@ -61,13 +67,12 @@ def getAngles(localLatitude, localLongitude):
 
 #intial startup ALTITUDE
 def initialise(altitudeAngle, azimuthAngle):
-    initial = 0
-    if initial == 0:
-        step.move(altitudeAngle, 0 , controlPins1) 
-        if azimuthAngle > 0:
-            step.move(azimuthAngle, 1, controlPins2)
-        elif azimuthAngle < 0:
-            step.move(abs(azimuthAngle), 1, controlPins2)
+    
+    step.move(altitudeAngle, 0 , controlPins1) 
+    if azimuthAngle > 0:
+        step.move(azimuthAngle, 1, controlPins2)
+    elif azimuthAngle < 0:
+        step.move(abs(azimuthAngle), 0, controlPins2)
 
     previousAltAngle = altitudeAngle
     previousAziAngle = azimuthAngle
@@ -80,26 +85,27 @@ def initialise(altitudeAngle, azimuthAngle):
 #NightTime/Reset
 def angleReset(previousAziAngle, previousAltAngle):
     # if altitudeAngle == 404 and azimuthAngle == 404: (needs to be placed in main loop as a condition)    
-    ok = 0
-    if (previousAziAngle < 0):
-        resetAzi = previousAziAngle
-        print("moving, azimuth, clockwise")
-        print("resetting clockwise by {0}".format(resetAzi))
-        step.move(resetAzi, 1, controlPins1)
-        ok+= 1
-    elif (previousAziAngle > 0):
-        resetAzi = abs(previousAziAngle)
-        print("moving, azimuth, anticlockwise")
-        print("resetting anticlockwise by {0}".format(resetAzi))
-        step.move(resetAzi, 0, controlPins1)
-        ok+= 1
+   
+    resetAzi = abs(previousAziAngle)
+    resetAlt = abs(previousAltAngle)
+
+    print("moving, azimuth, clockwise")
+    print("resetting clockwise by {0}".format(resetAzi))
+    step.move(resetAzi, 1, controlPins2)
     
-    if (previousAltAngle > 0):
-        resetAlt = previousAltAngle
-        print("moving, altitude, clockwise")
-        print("resetting clockwise by {0}".format(resetAlt))
-        step.move(resetAlt, 1, controlPins2)
-        ok+= 1
+    print("moving, altitude, anticlockwise")
+    print("resetting anticlockwise by {0}".format(resetAlt))
+    step.move(resetAlt, 0, controlPins1)
+
+    #elif (previousAziAngle > 0):
+    #    resetAzi = abs(previousAziAngle)
+    #    print("moving, azimuth, anticlockwise")
+    #    print("resetting anticlockwise by {0}".format(resetAzi))
+    #    step.move(resetAzi, 0, controlPins1)
+    #    ok+= 1
+    
+    
+   
    # elif (previousAltAngle < 0):
    #     resetAlt = abs(previousAltAngle)
     #    print("moving, altitude, anticlockwise")
@@ -107,15 +113,12 @@ def angleReset(previousAziAngle, previousAltAngle):
     #    step.move(resetAlt, 0, controlPins2)
      #   ok+= 1
 
-    if (ok == 2):
-        return 1
-    else:
-        return 0
+    return
 
 
 #Daytime
 def changeAngle(altitudeAngle, previousAltAngle, azimuthAngle, previousAziAngle):
-    altitudeDifference =  previousAltAngle - altitudeAngle
+    altitudeDifference = previousAltAngle - altitudeAngle
     print('altitudeDifference = {0}'.format(altitudeDifference))
     if (altitudeDifference) == 0:
         print("not moving, altitude")
@@ -129,7 +132,7 @@ def changeAngle(altitudeAngle, previousAltAngle, azimuthAngle, previousAziAngle)
     # altitudeDifference = 0
 
     #Azimuth
-    azimuthDifference = azimuthAngle - previousAziAngle
+    azimuthDifference = previousAziAngle - azimuthAngle
     print('\nazimuthDifference = {0}'.format(azimuthDifference))
     if (azimuthDifference) == 0:
         print("not moving, azimuth")
@@ -184,7 +187,7 @@ if __name__ == '__main__':
                 init = 1 
                 print("\nInitialised\n")
                 print("-------------------------------------------------------------------------------------------")
-            time.sleep(600) #program sleeps for 30 mins before executing more 
+            time.sleep(300) #program sleeps for 10 mins before executing more 
 
         while (init > 0):
             altitudeAngle, azimuthAngle = getAngles(localLatitude,localLongitude)
@@ -197,7 +200,7 @@ if __name__ == '__main__':
             else:
                 previousAziAngle, previousAltAngle = changeAngle(altitudeAngle, previousAltAngle, azimuthAngle, previousAziAngle)
                 print("-------------------------------------------------------------------------------------------")
-            time.sleep(600)
+            time.sleep(300)
        
 
  
