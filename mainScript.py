@@ -48,6 +48,11 @@ def getLocation():
                     check += 1
                 elif confirm is 'N' or 'n':
                     check = 0
+                else:
+                    print("Invalid Input, try again.")
+                    check = 2
+
+                    
     return localLatitude, localLongitude
             #Longitude ( -180 to 180)
     # First request for hour angle, and azimuth_angle 
@@ -85,17 +90,17 @@ def initialise(altitudeAngle, azimuthAngle):
 #NightTime/Reset
 def angleReset(previousAziAngle, previousAltAngle):
     # if altitudeAngle == 404 and azimuthAngle == 404: (needs to be placed in main loop as a condition)    
-   
+    print("In AngleReset")
     resetAzi = abs(previousAziAngle)
     resetAlt = abs(previousAltAngle)
 
-    print("moving, azimuth, clockwise")
-    print("resetting clockwise by {0}".format(resetAzi))
-    step.move(resetAzi, 1, controlPins2)
+    print("moving, azimuth, anticlockwise")
+    print("resetting anticlockwise by {0}".format(resetAzi))
+    step.move(round(resetAzi,2), 1, controlPins2)
     
-    print("moving, altitude, anticlockwise")
-    print("resetting anticlockwise by {0}".format(resetAlt))
-    step.move(resetAlt, 0, controlPins1)
+    print("moving, altitude, clockwise")
+    print("resetting clockwise by {0}".format(resetAlt))
+    step.move(resetAlt, 1, controlPins1)
 
     #elif (previousAziAngle > 0):
     #    resetAzi = abs(previousAziAngle)
@@ -187,7 +192,7 @@ if __name__ == '__main__':
                 init = 1 
                 print("\nInitialised\n")
                 print("-------------------------------------------------------------------------------------------")
-            time.sleep(300) #program sleeps for 10 mins before executing more 
+            time.sleep(300) #program sleeps for 5 mins before executing more 
 
         while (init > 0):
             altitudeAngle, azimuthAngle = getAngles(localLatitude,localLongitude)
